@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reveals Track</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="header-inner">
+        <div class="title-wrap">
+          <div class="kicker">REVEAL TRACK</div>
+          <h1 class="page-title" id="pageTitle">Winter Drop — Tile Reveals</h1>
+          <div class="sub" id="pageSub">
+            Big horizontal track. Tiles reveal at scheduled times. Click a revealed tile to upload an image.
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button class="btn ghost" id="resetBtn" type="button">Reset Images</button>
+          <button class="btn" id="jumpNextBtn" type="button">Scroll to Next Reveal</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="track-shell">
+        <div class="track-top">
+          <div class="track-label">REWARDS</div>
+          <div class="track-hint" id="trackHint">Reveals use your device time.</div>
+        </div>
+
+        <div class="track" id="track">
+          <div class="track-row" id="trackRow"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Hidden file picker (reused for all tiles) -->
+    <input
+      id="filePicker"
+      type="file"
+      accept="image/*"
+      style="display:none"
+    />
+
+    <!-- Modal -->
+    <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-head">
+          <div>
+            <div class="modal-kicker" id="modalKicker">Tile</div>
+            <div class="modal-title" id="modalTitle">Details</div>
+          </div>
+          <button class="icon-btn" id="modalCloseBtn" aria-label="Close" type="button">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="modal-preview" id="modalPreview"></div>
+          <div class="modal-meta">
+            <div class="meta-row">
+              <span class="meta-label">Rarity</span>
+              <span class="meta-value" id="modalRarity">—</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Reveal time</span>
+              <span class="meta-value" id="modalReveal">—</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Status</span>
+              <span class="meta-value" id="modalStatus">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-foot">
+          <button class="btn ghost" id="modalClose2Btn" type="button">Close</button>
+          <button class="btn" id="modalUploadBtn" type="button">Upload / Replace Image</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
