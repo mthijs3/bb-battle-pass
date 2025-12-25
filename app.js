@@ -15,9 +15,9 @@
  */
 
 // ====== CONFIG YOU EDIT ======
-const PAGE_TITLE = "Winter Drop — Tile Reveals";
+const PAGE_TITLE = "Bubsi's Battle Pass";
 const PAGE_SUB =
-  "Tiles reveal at scheduled times. Click a revealed tile to upload an image that fits the tile dimensions.";
+  "Elke week opent een nieuwe tile. Klik op een tile voor meer informatie";
 
 /**
  * Set your reveal schedule here (ISO timestamps).
@@ -29,12 +29,18 @@ const PAGE_SUB =
  *  - "2025-12-21T18:00:00"       (treated as local time by most browsers)
  */
 const TILES = [
-  { id: "tile-01", title: "Operator Card", rarity: "rare", revealAt: "2025-12-21T19:00:00+01:00", icon: "🎭" },
-  { id: "tile-02", title: "Weapon Wrap", rarity: "epic", revealAt: "2025-12-22T19:00:00+01:00", icon: "🗡️" },
-  { id: "tile-03", title: "Spray", rarity: "common", revealAt: "2025-12-23T19:00:00+01:00", icon: "🎨" },
-  { id: "tile-04", title: "Finisher", rarity: "legendary", revealAt: "2025-12-24T19:00:00+01:00", icon: "🔥" },
-  { id: "tile-05", title: "Banner", rarity: "rare", revealAt: "2025-12-25T19:00:00+01:00", icon: "🏆" },
-  { id: "tile-06", title: "Emote", rarity: "epic", revealAt: "2025-12-26T19:00:00+01:00", icon: "✨" },
+  { id: "1", title: "Date", rarity: "10 & 11 January", revealAt: "2025-11-31T20:30:00+01:00",  imageUrl: "https://i.ibb.co/V0L777yr/bp-tile1.jpg", icon: "👫" },
+  { id: "2", title: "Family Time", rarity: "Week 3", revealAt: "2025-01-10T20:30:00+01:00",	imageUrl: "https://i.ibb.co/QjdRhGQy/bp-tile1.jpg", icon: "👨‍👩‍👦️" },	
+  { id: "3", title: "Home date", rarity: "Week 4", revealAt: "2026-01-17T20:30:00+01:00", icon: "🏠" },
+  { id: "4", title: "Surprise", rarity: "Week 5", revealAt: "2026-01-24T20:30:00+01:00", icon: "🎁" },
+  { id: "5", title: "Date", rarity: "Week 6", revealAt: "2026-01-31T20:30:00+01:00", icon: "👫" },
+  { id: "6", title: "Family Time", rarity: "Week 7", revealAt: "2026-02-01T20:30:00+01:00", icon: "👨‍👩‍👦" },
+  { id: "7", title: "Home date", rarity: "Week 8", revealAt: "2026-02-07T20:30:00+01:00", icon: "🏠" },  
+  { id: "8", title: "Surprise", rarity: "Week 9", revealAt: "2026-02-14T20:30:00+01:00", icon: "🎁" },
+  { id: "9", title: "Date", rarity: "Week 10", revealAt: "2026-02-21T20:30:00+01:00", icon: "👫" },
+  { id: "10", title: "Family Time", rarity: "Week 11", revealAt: "2026-02-28T20:30:00+01:00", icon: "👨‍👩‍👦" },
+  { id: "11", title: "Home date", rarity: "Week 12", revealAt: "2026-03-07T20:30:00+01:00", icon: "🏠" },
+  { id: "12", title: "Surprise", rarity: "Week 13", revealAt: "2026-03-14T20:30:00+01:00", icon: "🎁" },
 ];
 
 // ====== STATE ======
@@ -51,7 +57,6 @@ const trackHint = document.getElementById("trackHint");
 
 const filePicker = document.getElementById("filePicker");
 
-const resetBtn = document.getElementById("resetBtn");
 const jumpNextBtn = document.getElementById("jumpNextBtn");
 
 // Modal
@@ -149,116 +154,63 @@ function renderTrack() {
   trackRow.innerHTML = "";
 
   const now = new Date();
-  trackHint.textContent = `Now: ${formatLocal(now)} • Reveals use your device time`;
+  trackHint.textContent = `Now: ${formatLocal(now)} CET`;
 
   for (const tile of TILES) {
-    const revealAt = parseTime(tile.revealAt);
-    const revealed = revealAt ? now >= revealAt : false;
-    const hasImage = !!imagesById[tile.id];
+  const revealAt = parseTime(tile.revealAt);
+  const revealed = revealAt ? now >= revealAt : false;
 
-    const el = document.createElement("div");
-    el.className = `tile ${rarityClass(tile.rarity)} ${revealed ? "revealed" : "locked"}`;
-    el.setAttribute("data-id", tile.id);
+  // URL-only cover (shown only after reveal)
+  const coverUrl = revealed ? (tile.imageUrl || "") : "";
+  const hasImage = !!coverUrl;
 
-    const inner = document.createElement("div");
-    inner.className = "tile-inner";
+  const el = document.createElement("div");
+  el.className = `tile ${rarityClass(tile.rarity)} ${revealed ? "revealed" : "locked"}`;
+  el.setAttribute("data-id", tile.id);
 
-    const head = document.createElement("div");
-    head.className = "tile-head";
+  // Image-only art container
+  const art = document.createElement("div");
+  art.className = "art art-only";
 
-    const badges = document.createElement("div");
-    badges.className = "badges";
-
-    const rarity = document.createElement("div");
-    rarity.className = rarityBadgeClass(tile.rarity);
-    rarity.textContent = rarityLabel(tile.rarity);
-
-    const status = document.createElement("div");
-    status.className = "badge status";
-    status.textContent = revealed ? (hasImage ? "IMAGE SET" : "REVEALED") : "LOCKED";
-
-    badges.appendChild(rarity);
-    badges.appendChild(status);
-
-    head.appendChild(badges);
-
-    const title = document.createElement("div");
-    title.className = "tile-title";
-    title.textContent = tile.title;
-
-    const sub = document.createElement("div");
-    sub.className = "tile-sub";
-    sub.textContent = revealed
-      ? "Click to upload / replace tile image."
-      : "Reveals automatically at the scheduled time.";
-
-    const art = document.createElement("div");
-    art.className = "art";
-
-    if (hasImage) {
-      const img = document.createElement("img");
-      img.src = imagesById[tile.id];
-      img.alt = `${tile.title} image`;
-      art.appendChild(img);
-    } else {
-      const ph = document.createElement("div");
-      ph.className = "placeholder";
-      ph.textContent = tile.icon || "🎁";
-      art.appendChild(ph);
-    }
-
-    const foot = document.createElement("div");
-    foot.className = "tile-foot";
-
-    const time = document.createElement("div");
-    time.className = "time";
-    time.innerHTML = `Reveal <span>${revealAt ? formatLocal(revealAt) : "Invalid time"}</span>`;
-
-    const cta = document.createElement("div");
-    cta.className = "cta";
-    cta.textContent = revealed ? "OPEN" : "COUNTDOWN";
-
-    foot.appendChild(time);
-    foot.appendChild(cta);
-
-    inner.appendChild(head);
-    inner.appendChild(title);
-    inner.appendChild(sub);
-    inner.appendChild(art);
-    inner.appendChild(foot);
-
-    el.appendChild(inner);
-
-    if (!revealed) {
-      // overlay with countdown
-      const overlay = document.createElement("div");
-      overlay.className = "locked-overlay";
-
-      const lt = document.createElement("div");
-      lt.className = "locked-title";
-      lt.textContent = "LOCKED";
-
-      const cd = document.createElement("div");
-      cd.className = "countdown";
-      cd.setAttribute("data-countdown-for", tile.id);
-
-      const help = document.createElement("small");
-      help.textContent = "Reveals in";
-
-      cd.appendChild(help);
-      overlay.appendChild(lt);
-      overlay.appendChild(cd);
-
-      el.appendChild(overlay);
-    }
-
-    // Click behavior
-    el.addEventListener("click", () => {
-      openTileModal(tile);
-    });
-
-    trackRow.appendChild(el);
+  if (hasImage) {
+    const img = document.createElement("img");
+    img.src = coverUrl;
+    img.alt = `${tile.title} cover`;
+    art.appendChild(img);
+  } else {
+    const ph = document.createElement("div");
+    ph.className = "placeholder";
+    ph.textContent = tile.icon || "⬡";
+    art.appendChild(ph);
   }
+
+  el.appendChild(art);
+
+  // Locked overlay with countdown
+  if (!revealed) {
+    const overlay = document.createElement("div");
+    overlay.className = "locked-overlay";
+
+    const cd = document.createElement("div");
+    cd.className = "countdown big";
+    cd.setAttribute("data-countdown-for", tile.id);
+    cd.innerHTML = `<small>Reveals in</small>${countdownString(
+      (revealAt ? revealAt.getTime() : now.getTime()) - now.getTime()
+    )}`;
+
+    overlay.appendChild(cd);
+    el.appendChild(overlay);
+  }
+
+  // Click → modal stays
+  el.addEventListener("click", () => {
+    openTileModal(tile);
+  });
+
+  trackRow.appendChild(el);
+}
+
+
 
   // After render, update countdowns immediately
   updateCountdowns();
@@ -300,24 +252,23 @@ function openTileModal(tile) {
   modalReveal.textContent = revealAt ? formatLocal(revealAt) : "Invalid time";
   modalStatus.textContent = revealed ? "Revealed" : "Locked";
 
+  // URL-only preview: show tile.imageUrl only after reveal
   modalPreview.innerHTML = "";
-  const hasImage = !!imagesById[tile.id];
 
-  if (hasImage) {
+  if (revealed && tile.imageUrl) {
     const img = document.createElement("img");
-    img.src = imagesById[tile.id];
-    img.alt = `${tile.title} image`;
+    img.src = tile.imageUrl;
+    img.alt = `${tile.title} cover`;
     modalPreview.appendChild(img);
   } else {
     const ph = document.createElement("div");
     ph.style.fontSize = "56px";
-    ph.textContent = tile.icon || "🎁";
+    ph.textContent = tile.icon || "⬡";
     modalPreview.appendChild(ph);
   }
 
-  // Only allow uploads if revealed
-  modalUploadBtn.disabled = !revealed;
-  modalUploadBtn.textContent = revealed ? "Upload / Replace Image" : "Locked (wait for reveal)";
+  // URL-only: no uploads
+  modalUploadBtn.style.display = "none";
 
   modalBackdrop.classList.add("open");
   modalBackdrop.setAttribute("aria-hidden", "false");
@@ -374,13 +325,6 @@ function fileToDataURL(file) {
 }
 
 // ====== BUTTONS ======
-resetBtn.addEventListener("click", () => {
-  imagesById = {};
-  saveImages();
-  renderTrack();
-  closeModal();
-});
-
 jumpNextBtn.addEventListener("click", () => {
   const idx = nextUnrevealedIndex();
   // If all revealed, jump to last
