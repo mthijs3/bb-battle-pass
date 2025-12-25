@@ -29,8 +29,8 @@ const PAGE_SUB =
  *  - "2025-12-21T18:00:00"       (treated as local time by most browsers)
  */
 const TILES = [
-  { id: "1", title: "Date", rarity: "10 & 11 January", revealAt: "2025-11-31T20:30:00+01:00",  imageUrl: "https://i.ibb.co/V0L777yr/bp-tile1.jpg", icon: "👫" },
-  { id: "2", title: "Family Time", rarity: "Week 3", revealAt: "2025-01-10T20:30:00+01:00",	imageUrl: "https://i.ibb.co/QjdRhGQy/bp-tile1.jpg", icon: "👨‍👩‍👦️" },	
+  { id: "1", title: "Date", rarity: "10 & 11 January", revealAt: "2025-12-31T20:30:00+01:00",  imageUrl: "https://i.ibb.co/V0L777yr/bp-tile1.jpg", icon: "👫" },
+  { id: "2", title: "Family Time", rarity: "Week 3", revealAt: "2026-01-10T20:30:00+01:00", icon: "👨‍👩‍👦️" },	
   { id: "3", title: "Home date", rarity: "Week 4", revealAt: "2026-01-17T20:30:00+01:00", icon: "🏠" },
   { id: "4", title: "Surprise", rarity: "Week 5", revealAt: "2026-01-24T20:30:00+01:00", icon: "🎁" },
   { id: "5", title: "Date", rarity: "Week 6", revealAt: "2026-01-31T20:30:00+01:00", icon: "👫" },
@@ -341,3 +341,4 @@ jumpNextBtn.addEventListener("click", () => {
 renderTrack();
 // Update countdowns every second
 setInterval(updateCountdowns, 1000);
+
